@@ -3,34 +3,853 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tipsters Hub</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide-react/dist/umd/lucide-react.js"></script>
+  <title>Bet9ja Tipsters' Hub</title>
   <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    :root{
+      --bg:#09090b;
+      --panel:#18181b;
+      --panel-2:#27272a;
+      --panel-3:#3f3f46;
+      --text:#fafafa;
+      --muted:#a1a1aa;
+      --muted-2:#71717a;
+      --border:#27272a;
+      --green:#16a34a;
+      --green-2:#22c55e;
+      --yellow:#eab308;
+      --blue:#3b82f6;
+      --red:#ef4444;
+      --orange:#f97316;
+      --shadow:0 18px 40px rgba(0,0,0,.45);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#030303;color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{min-height:100vh}
+    button{font:inherit}
+    img{display:block;max-width:100%}
+
+    .page{
+      min-height:100vh;
+      background:linear-gradient(180deg,#050505 0%, #09090b 100%);
+      display:flex;
+      justify-content:center;
+      padding:0;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    .desktop-decoration{
+      display:none;
+      position:fixed;
+      left:40px;
+      top:50%;
+      transform:translateY(-50%);
+      max-width:280px;
+      z-index:1;
+    }
+
+    .desktop-decoration h2{
+      font-size:42px;
+      line-height:.95;
+      margin:0 0 14px;
+      font-weight:900;
+      letter-spacing:-.04em;
+    }
+
+    .desktop-decoration h2 span{color:var(--green-2)}
+    .desktop-decoration p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      font-style:italic;
+      line-height:1.5;
+    }
+
+    .desktop-card{
+      padding:16px;
+      border-radius:20px;
+      background:rgba(24,24,27,.95);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+    }
+
+    .desktop-card .eyebrow{
+      font-size:10px;
+      font-weight:900;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      margin-bottom:8px;
+    }
+
+    .desktop-card .title{
+      font-size:16px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .desktop-card .sub{
+      font-size:13px;
+      font-weight:700;
+      color:var(--green-2);
+    }
+
+    .phone-shell{
+      width:100%;
+      max-width:430px;
+      min-height:100vh;
+      background:#000;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      z-index:2;
+      box-shadow:var(--shadow);
+    }
+
+    .app-header{
+      position:sticky;
+      top:0;
+      z-index:40;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 24px;
+      background:rgba(0,0,0,.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .header-left,.header-right{display:flex;align-items:center;gap:10px}
+    .brand{
+      background:var(--green);
+      color:#fff;
+      font-size:10px;
+      font-weight:900;
+      padding:3px 8px;
+      border-radius:6px;
+      font-style:italic;
+      letter-spacing:-.03em;
+    }
+    .divider{width:1px;height:16px;background:var(--border)}
+    .header-title{
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+    }
+
+    .balance-wrap{display:flex;flex-direction:column;align-items:flex-end}
+    .balance-label{
+      font-size:8px;
+      color:var(--muted);
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .balance-value{
+      font-size:12px;
+      color:var(--green-2);
+      font-weight:900;
+      line-height:1;
+    }
+    .avatar-mini{
+      width:32px;height:32px;border-radius:50%;
+      border:1px solid #3f3f46;
+      background:#18181b;
+      display:grid;place-items:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .main{
+      flex:1;
+      padding:24px 20px 112px;
+      position:relative;
+    }
+
+    .tabs{
+      display:flex;
+      gap:4px;
+      width:max-content;
+      margin:0 auto 24px;
+      padding:4px;
+      border-radius:18px;
+      background:#18181b;
+      border:1px solid var(--border);
+    }
+
+    .tab-btn{
+      padding:10px 20px;
+      border:none;
+      background:transparent;
+      color:var(--muted-2);
+      border-radius:14px;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .tab-btn.active{
+      background:#27272a;
+      color:var(--green-2);
+      box-shadow:var(--shadow);
+    }
+
+    .section{margin-bottom:28px}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:30px;
+      padding:24px;
+      border:1px solid rgba(34,197,94,.18);
+      background:linear-gradient(135deg,#166534 0%, #000 75%);
+      margin-bottom:24px;
+    }
+    .hero h1{
+      margin:0 0 6px;
+      font-size:42px;
+      font-weight:900;
+      line-height:.9;
+      letter-spacing:-.05em;
+    }
+    .hero p{
+      max-width:220px;
+      margin:0 0 16px;
+      font-size:12px;
+      color:rgba(220,252,231,.65);
+      line-height:1.4;
+    }
+    .hero-icon{
+      position:absolute;
+      right:-18px;
+      top:-4px;
+      opacity:.1;
+      font-size:160px;
+      pointer-events:none;
+    }
+
+    .pulse-row{
+      display:flex;align-items:center;gap:8px;margin-bottom:8px
+    }
+    .pulse-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--green-2);
+      box-shadow:0 0 0 0 rgba(34,197,94,.55);
+      animation:pulse 1.7s infinite;
+    }
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}
+      70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}
+      100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+    }
+
+    .eyebrow{
+      font-size:9px;
+      color:#86efac;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.3em;
+    }
+
+    .badge{
+      display:inline-flex;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      border:1px solid transparent;
+    }
+    .badge.green{background:rgba(34,197,94,.08);color:#4ade80;border-color:rgba(34,197,94,.2)}
+    .badge.gold{background:rgba(234,179,8,.08);color:#facc15;border-color:rgba(234,179,8,.2)}
+    .badge.blue{background:rgba(59,130,246,.08);color:#60a5fa;border-color:rgba(59,130,246,.2)}
+    .badge.red{background:rgba(239,68,68,.08);color:#f87171;border-color:rgba(239,68,68,.2)}
+
+    .section-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 8px;margin-bottom:14px;
+    }
+    .section-title{
+      font-size:11px;
+      font-weight:900;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .flame{color:var(--orange)}
+    .muted-icon{color:#52525b;font-size:14px}
+
+    .scroll-row{
+      display:flex;
+      gap:14px;
+      overflow:auto;
+      padding:0 2px 8px;
+      scrollbar-width:none;
+    }
+    .scroll-row::-webkit-scrollbar{display:none}
+
+    .win-card{
+      min-width:220px;
+      border-radius:22px;
+      background:#18181b;
+      border:1px solid var(--border);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      box-shadow:var(--shadow);
+    }
+    .win-top{
+      display:flex;justify-content:space-between;gap:8px;margin-bottom:4px;
+    }
+    .tiny-green{
+      font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--green-2)
+    }
+    .tiny-muted{
+      font-size:9px;font-weight:700;text-transform:uppercase;color:#71717a
+    }
+    .win-odds{font-size:32px;font-weight:900;line-height:1}
+    .win-amount{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px}
+    .code-row{
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:10px;
+      background:rgba(0,0,0,.45);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 12px;
+      color:var(--muted);
+      margin-top:auto;
+      margin-bottom:10px;
+      gap:10px;
+    }
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .ghost-btn,.solid-btn,.outline-btn,.copy-btn,.nav-btn,.small-btn{
+      border:none;cursor:pointer;transition:.2s ease;
+    }
+    .ghost-btn{
+      width:100%;
+      padding:10px 12px;
+      background:#27272a;
+      color:#fff;
+      border:1px solid #3f3f46;
+      border-radius:14px;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+    .ghost-btn:hover{background:#3f3f46}
+
+    .card-list{display:grid;gap:16px}
+    .tipster-card{
+      background:#18181b;
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .tipster-card:hover{border-color:rgba(34,197,94,.45);transform:translateY(-1px)}
+    .tipster-top{
+      display:flex;align-items:center;gap:14px;margin-bottom:16px;
+    }
+    .tipster-avatar-wrap{position:relative}
+    .tipster-avatar{
+      width:56px;height:56px;border-radius:50%;
+      border:2px solid #3f3f46;background:#27272a;object-fit:cover;
+    }
+    .trophy-badge{
+      position:absolute;top:-4px;right:-4px;
+      width:20px;height:20px;border-radius:50%;
+      background:var(--yellow);color:#111;
+      display:grid;place-items:center;font-size:12px;font-weight:900;
+      box-shadow:var(--shadow);
+    }
+    .tipster-name{
+      font-weight:800;font-size:18px;margin:0 0 2px;
+    }
+    .tipster-spacer{flex:1}
+    .stat-label{
+      font-size:9px;font-weight:900;color:var(--muted-2);
+      text-transform:uppercase;letter-spacing:.14em;
+    }
+    .stat-value-green{
+      color:var(--green-2);font-size:26px;font-weight:900;line-height:1;
+    }
+    .mini-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;
+      background:rgba(0,0,0,.4);
+      border:1px solid rgba(63,63,70,.6);
+      border-radius:18px;
+      padding:14px;
+      margin-bottom:12px;
+    }
+    .mini-metric-label{
+      font-size:9px;font-weight:900;color:var(--muted-2);
+      text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px;
+    }
+    .mini-metric-val{
+      font-size:14px;font-weight:800;color:#e4e4e7;
+      display:flex;align-items:center;gap:6px;
+    }
+    .icon-blue{color:var(--blue)}
+    .icon-orange{color:var(--orange)}
+
+    .outline-btn{
+      width:100%;
+      padding:11px 14px;
+      border-radius:14px;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      color:var(--green-2);
+      background:rgba(34,197,94,.06);
+      border:1px solid rgba(34,197,94,.18);
+    }
+    .outline-btn:hover{
+      background:var(--green);
+      color:#fff;
+    }
+
+    .leaderboard{
+      background:#18181b;
+      border:1px solid var(--border);
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+    }
+    .leaderboard-head{
+      padding:24px;
+      background:rgba(39,39,42,.4);
+      border-bottom:1px solid var(--border);
+    }
+    .leaderboard-head h2{
+      margin:0 0 4px;
+      font-size:24px;
+      font-weight:900;
+    }
+    .leaderboard-head p{
+      margin:0;
+      font-size:10px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-style:italic;
+      font-weight:700;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    thead{
+      background:rgba(0,0,0,.22);
+      color:var(--muted-2);
+      font-size:9px;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      font-weight:900;
+    }
+    th,td{padding:18px 16px}
+    th{text-align:left}
+    td{border-top:1px solid rgba(63,63,70,.45)}
+    tbody tr{cursor:pointer;transition:.15s ease}
+    tbody tr:hover{background:rgba(34,197,94,.04)}
+    tbody tr.top-three{background:rgba(24,24,27,.65)}
+    .table-user{
+      display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900
+    }
+    .table-avatar{
+      width:32px;height:32px;border-radius:50%;
+      border:1px solid #3f3f46;background:#27272a;object-fit:cover
+    }
+    .center{text-align:center}
+    .right{text-align:right}
+
+    .back-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      border:none;background:none;padding:0;margin:0 0 22px;
+      color:var(--muted);
+      font-size:10px;font-weight:900;text-transform:uppercase;
+      letter-spacing:.14em;cursor:pointer;
+    }
+    .back-btn:hover{color:var(--green-2)}
+
+    .profile-card{
+      background:#18181b;
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+    }
+    .profile-head{
+      display:flex;flex-direction:column;align-items:center;text-align:center;
+      margin-bottom:24px;
+    }
+    .profile-avatar-wrap{position:relative;margin-bottom:16px}
+    .profile-avatar{
+      width:96px;height:96px;border-radius:26px;object-fit:cover;
+      border:4px solid #18181b;background:#27272a;box-shadow:var(--shadow);
+    }
+    .verified{
+      position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
+      background:var(--green);color:#fff;
+      border-radius:10px;padding:6px 10px;
+      font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.14em;
+      white-space:nowrap;
+    }
+    .profile-name{
+      margin:0 0 8px;font-size:32px;font-weight:900;line-height:1;
+    }
+    .profile-bio{
+      margin:0;max-width:260px;font-size:13px;line-height:1.5;
+      color:var(--muted);font-style:italic;
+    }
+    .profile-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px
+    }
+    .profile-stat{
+      text-align:center;
+      background:rgba(0,0,0,.4);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+    .profile-stat .label{
+      margin-bottom:4px;
+      font-size:9px;font-weight:900;color:var(--muted-2);
+      text-transform:uppercase;letter-spacing:.14em;
+    }
+    .profile-stat .value.green{font-size:30px;font-weight:900;color:var(--green-2)}
+    .profile-stat .value{font-size:30px;font-weight:900}
+    .form-card{
+      text-align:center;
+      background:rgba(22,163,74,.06);
+      border:1px solid rgba(22,163,74,.22);
+      border-radius:18px;padding:16px;
+    }
+    .dots{display:flex;justify-content:center;gap:6px}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .dot.green{background:var(--green-2)}
+    .dot.red{background:rgba(239,68,68,.35)}
+
+    .subsection-title{
+      font-size:10px;font-weight:900;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.2em;margin:0 0 14px;padding:0 8px;
+    }
+
+    .booking-card{
+      background:#18181b;
+      border:1px solid var(--border);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    .booking-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 16px;
+      background:rgba(39,39,42,.55);
+      border-bottom:1px solid var(--border);
+    }
+    .booking-head .left{
+      font-size:10px;font-weight:900;color:#a1a1aa;text-transform:uppercase;letter-spacing:.14em
+    }
+    .booking-body{padding:16px}
+    .booking-code-row{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:16px;
+    }
+    .booking-code{
+      font-size:28px;font-weight:900;letter-spacing:.12em
+    }
+    .copy-btn{
+      width:40px;height:40px;border-radius:14px;
+      display:grid;place-items:center;
+      background:#27272a;color:#a1a1aa;border:1px solid #3f3f46;
+    }
+    .copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green)}
+    .legs{display:grid;gap:10px;margin-bottom:16px}
+    .leg-row{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border-radius:14px;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(63,63,70,.45);
+      font-size:12px;
+    }
+    .leg-left{
+      display:flex;align-items:center;gap:10px;min-width:0;
+    }
+    .leg-status{
+      width:16px;height:16px;display:grid;place-items:center;
+      flex:0 0 auto;font-size:13px;
+    }
+    .leg-status.won{color:var(--green-2)}
+    .leg-status.lost{color:var(--red)}
+    .leg-status.pending{
+      border-radius:50%;border:2px solid #52525b;width:14px;height:14px;
+    }
+    .leg-text{min-width:0}
+    .leg-match{
+      color:#f4f4f5;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+    }
+    .leg-pick{
+      font-size:9px;color:var(--muted-2);font-weight:900;text-transform:uppercase
+    }
+    .leg-odds{color:var(--green-2);font-weight:900;flex:0 0 auto}
+
+    .booking-foot{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding-top:16px;border-top:1px solid var(--border);
+    }
+    .booking-meta-label{
+      font-size:9px;font-weight:900;color:var(--muted-2);text-transform:uppercase;letter-spacing:.14em
+    }
+    .booking-meta-value{
+      font-size:22px;font-weight:900;line-height:1.1
+    }
+    .solid-btn{
+      padding:12px 20px;border-radius:14px;background:var(--green);color:#fff;
+      font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;
+      box-shadow:0 8px 24px rgba(22,163,74,.28);
+    }
+    .solid-btn:hover{background:var(--green-2)}
+
+    .empty-state{
+      background:rgba(24,24,27,.55);
+      border:2px dashed var(--border);
+      border-radius:28px;
+      padding:40px 18px;
+      text-align:center;
+      color:#71717a;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-style:italic;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:100%;
+      max-width:430px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:4px;
+      padding:14px 18px calc(14px + env(safe-area-inset-bottom, 0px));
+      background:rgba(0,0,0,.95);
+      backdrop-filter:blur(12px);
+      border-top:1px solid var(--border);
+      z-index:45;
+    }
+
+    .nav-btn{
+      flex:1;
+      background:none;
+      color:#71717a;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      padding:4px 2px;
+      font-size:8px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+    .nav-icon{font-size:18px;line-height:1}
+    .nav-btn.active{color:var(--green-2)}
+
+    .modal{
+      position:fixed;inset:0;z-index:100;display:none;
+      align-items:flex-end;justify-content:center;padding:0 16px;
+    }
+    .modal.show{display:flex}
+    .modal-backdrop{
+      position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)
+    }
+    .modal-sheet{
+      position:relative;
+      width:100%;
+      max-width:400px;
+      margin-bottom:0;
+      background:#18181b;
+      border:1px solid var(--border);
+      border-radius:32px 32px 0 0;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transform:translateY(18px);
+      opacity:0;
+      transition:.22s ease;
+      z-index:1;
+    }
+    .modal.show .modal-sheet{
+      transform:translateY(0);
+      opacity:1;
+    }
+    .modal-close{
+      position:absolute;top:16px;right:16px;z-index:2;
+      width:40px;height:40px;border-radius:50%;
+      border:none;background:rgba(0,0,0,.42);color:#fff;cursor:pointer;
+      font-size:18px;
+    }
+    .modal-body{padding:24px}
+    .modal-head{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+    .modal-icon{
+      width:48px;height:48px;border-radius:18px;background:var(--green);
+      display:grid;place-items:center;font-size:24px;box-shadow:0 10px 26px rgba(22,163,74,.28)
+    }
+    .modal-title{margin:0;font-size:28px;font-weight:900;line-height:1}
+    .modal-sub{
+      margin-top:4px;font-size:10px;font-weight:900;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.14em
+    }
+    .coupon-box{
+      background:rgba(0,0,0,.38);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:16px;
+      margin-bottom:20px;
+    }
+    .coupon-top{
+      display:flex;justify-content:space-between;gap:12px;
+      margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(63,63,70,.55)
+    }
+    .coupon-label{
+      display:block;font-size:10px;font-weight:900;color:var(--muted-2);
+      text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px
+    }
+    .coupon-big{
+      font-size:28px;font-weight:900;letter-spacing:.12em
+    }
+    .coupon-green{font-size:28px;font-weight:900;color:var(--green-2)}
+    .coupon-leg{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+      padding:8px 0;
+    }
+    .coupon-leg-left{
+      display:flex;gap:10px;min-width:0;
+    }
+    .coupon-check{color:var(--green-2);font-size:16px;line-height:1;padding-top:1px}
+    .coupon-match{font-size:13px;font-weight:800;line-height:1.3}
+    .coupon-pick{
+      font-size:10px;font-weight:900;color:var(--muted-2);text-transform:uppercase;letter-spacing:.12em;margin-top:2px
+    }
+    .coupon-leg-right{text-align:right;flex:0 0 auto}
+    .coupon-leg-right .odd{font-size:13px;font-weight:900;color:var(--green-2)}
+    .coupon-leg-right .won{font-size:9px;font-weight:900;color:rgba(34,197,94,.6);text-transform:uppercase}
+
+    .modal-actions{display:flex;gap:12px}
+    .small-btn{
+      flex:1;
+      padding:16px 14px;
+      border-radius:18px;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .small-btn.secondary{
+      background:#27272a;color:#fff;border:1px solid #3f3f46;
+    }
+    .small-btn.primary{
+      background:var(--green);color:#fff;box-shadow:0 8px 24px rgba(22,163,74,.25)
+    }
+    .modal-foot{
+      text-align:center;font-size:9px;font-weight:700;color:#52525b;
+      text-transform:uppercase;letter-spacing:.2em;margin-top:18px
+    }
+
+    @media (min-width: 768px){
+      .page{padding:32px}
+      .phone-shell{
+        min-height:850px;
+        border-radius:40px;
+        border:8px solid #27272a;
+        overflow:hidden;
+      }
+      .modal{align-items:center;padding-bottom:16px}
+      .modal-sheet{border-radius:32px;margin-bottom:0}
+    }
+    @media (min-width: 1200px){
+      .desktop-decoration{display:block}
+    }
   </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useMemo } = React;
-    const {
-      Trophy, Users, TrendingUp, CheckCircle2, XCircle, Copy, ChevronRight,
-      ArrowLeft, Filter, Star, Flame, Globe, LayoutDashboard, Settings, X
-    } = LucideReact;
+  <div class="page">
+    <aside class="desktop-decoration">
+      <h2>BET9JA <br><span>TIPSTERS’ HUB</span></h2>
+      <p>"The elite destination for verified World Cup analysis and squad-driven betting."</p>
+      <div class="desktop-card">
+        <div class="eyebrow">Phase 1 Status</div>
+        <div class="title">Live Campaign Mode</div>
+        <div class="sub">12 Expert Squad Active</div>
+      </div>
+    </aside>
 
+    <div class="phone-shell">
+      <header class="app-header">
+        <div class="header-left">
+          <div class="brand">B9ja</div>
+          <div class="divider"></div>
+          <div class="header-title">Hub</div>
+        </div>
+        <div class="header-right">
+          <div class="balance-wrap">
+            <div class="balance-label">Balance</div>
+            <div class="balance-value">₦25,450</div>
+          </div>
+          <div class="avatar-mini">👤</div>
+        </div>
+      </header>
+
+      <main class="main" id="app"></main>
+
+      <nav class="bottom-nav">
+        <button class="nav-btn active" data-nav="home"><span class="nav-icon">⌂</span><span>Home</span></button>
+        <button class="nav-btn" data-nav="live"><span class="nav-icon">◉</span><span>Live</span></button>
+        <button class="nav-btn" data-nav="ranks"><span class="nav-icon">🏆</span><span>Ranks</span></button>
+        <button class="nav-btn" data-nav="wins"><span class="nav-icon">★</span><span>Wins</span></button>
+        <button class="nav-btn" data-nav="profile"><span class="nav-icon">⚙</span><span>Profile</span></button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="modal" id="couponModal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-sheet">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
     const CURATED_TIPSTERS = [
       {
-        id: 't1', name: 'EaglesEye',
+        id: 't1',
+        name: 'EaglesEye',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
         bio: 'World Cup specialist focused on African teams and underdog value.',
-        accuracy: 78.5, winRate: 12.0, backs: 1450, topOdds: 45.2, rank: 1,
+        accuracy: 78.5,
+        winRate: 12.0,
+        backs: 1450,
+        topOdds: 45.2,
+        rank: 1,
         recentTips: [
           { id: 'b1', code: 'WC-X92-J8', date: '2026-06-11', odds: 5.4, status: 'pending', legs: [
             { match: 'Qatar vs Ecuador', pick: 'Home Win', odds: 2.1, status: 'won' },
@@ -45,10 +864,15 @@
         ]
       },
       {
-        id: 't2', name: 'TacticalSam',
+        id: 't2',
+        name: 'TacticalSam',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sam',
         bio: 'Data-driven insights for the beautiful game.',
-        accuracy: 82.1, winRate: 8.5, backs: 2100, topOdds: 15.4, rank: 2,
+        accuracy: 82.1,
+        winRate: 8.5,
+        backs: 2100,
+        topOdds: 15.4,
+        rank: 2,
         recentTips: [
           { id: 'b3', code: 'WC-L99-M1', date: '2026-06-11', odds: 3.2, status: 'won', legs: [
             { match: 'Brazil vs Serbia', pick: 'Home Win', odds: 1.4, status: 'won' },
@@ -58,18 +882,29 @@
         ]
       },
       {
-        id: 't3', name: 'TheOracle',
+        id: 't3',
+        name: 'TheOracle',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Oracle',
         bio: 'High stakes, high rewards. Multiples are my specialty.',
-        accuracy: 65.4, winRate: 5.2, backs: 890, topOdds: 112.5, rank: 3, recentTips: []
+        accuracy: 65.4,
+        winRate: 5.2,
+        backs: 890,
+        topOdds: 112.5,
+        rank: 3,
+        recentTips: []
       },
-      { id: 't4', name: 'BetQueen', accuracy: 72.1, winRate: 15.0, backs: 3200, topOdds: 8.2, rank: 4, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen', recentTips: [] },
-      { id: 't5', name: 'CornerKing', accuracy: 89.4, winRate: 21.0, backs: 1100, topOdds: 4.5, rank: 5, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=King', recentTips: [] },
+      { id: 't4', name: 'BetQueen', accuracy: 72.1, winRate: 15.0, backs: 3200, topOdds: 8.2, rank: 4, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Queen', bio: 'Sharp reads and cleaner singles, with the odd multiple when value is there.', recentTips: [] },
+      { id: 't5', name: 'CornerKing', accuracy: 89.4, winRate: 21.0, backs: 1100, topOdds: 4.5, rank: 5, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=King', bio: 'Corners, tempo and in-play angles. Lower odds, higher consistency.', recentTips: [] },
     ];
 
     const BIG_WINS = [
       {
-        id: 'w1', tipster: 'TheOracle', odds: 112.5, date: '2d ago', code: 'WC-MEGA-Z', amount: '₦2.5M',
+        id: 'w1',
+        tipster: 'TheOracle',
+        odds: 112.5,
+        date: '2d ago',
+        code: 'WC-MEGA-Z',
+        amount: '₦2.5M',
         legs: [
           { match: 'Belgium vs Canada', pick: 'Draw', odds: 4.5, status: 'won' },
           { match: 'Morocco vs Croatia', pick: 'Morocco Win', odds: 5.0, status: 'won' },
@@ -77,415 +912,456 @@
         ]
       },
       {
-        id: 'w2', tipster: 'EaglesEye', odds: 45.2, date: '1d ago', code: 'WC-FLY-HIGH', amount: '₦450k',
+        id: 'w2',
+        tipster: 'EaglesEye',
+        odds: 45.2,
+        date: '1d ago',
+        code: 'WC-FLY-HIGH',
+        amount: '₦450k',
         legs: [
           { match: 'Cameroon vs Switzerland', pick: 'Cameroon Win', odds: 4.2, status: 'won' },
           { match: 'Uruguay vs S. Korea', pick: 'Draw', odds: 3.4, status: 'won' },
           { match: 'Portugal vs Ghana', pick: 'Over 3.5 Goals', odds: 3.1, status: 'won' }
         ]
-      },
+      }
     ];
 
-    const Badge = ({ children, color = "green" }) => {
-      const colors = {
-        green: "bg-green-500/10 text-green-400 border-green-500/20",
-        gold: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-        blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-        red: "bg-red-500/10 text-red-400 border-red-500/20",
-      };
-      return (
-        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${colors[color]}`}>
-          {children}
-        </span>
-      );
+    const state = {
+      activeTab: 'hub',
+      selectedTipster: null,
+      selectedWin: null
     };
 
-    const TipsterCard = ({ tipster, onClick }) => (
-      <div onClick={() => onClick(tipster)} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 shadow-xl hover:border-green-600/50 transition-all cursor-pointer group">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="relative">
-            <img src={tipster.avatar} alt={tipster.name} className="w-14 h-14 rounded-full bg-zinc-800 border-2 border-zinc-700 shadow-sm" />
-            {tipster.rank <= 3 && (
-              <div className="absolute -top-1 -right-1 bg-yellow-500 rounded-full p-1 text-black shadow-sm">
-                <Trophy size={12} strokeWidth={3} />
-              </div>
-            )}
-          </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-white group-hover:text-green-500 transition-colors">{tipster.name}</h3>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-tighter">Leg Accuracy</p>
-            <p className="text-lg font-black text-green-500 leading-tight">{tipster.accuracy}%</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2 bg-black/40 rounded-xl p-3 mb-3 border border-zinc-800/50">
-          <div>
-            <p className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Backs</p>
-            <div className="flex items-center gap-1 text-sm font-bold text-zinc-200">
-              <Users size={12} className="text-blue-500" />
-              {tipster.backs.toLocaleString()}
-            </div>
-          </div>
-          <div>
-            <p className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Peak Odds</p>
-            <div className="flex items-center gap-1 text-sm font-bold text-zinc-200">
-              <TrendingUp size={12} className="text-orange-500" />
-              {tipster.topOdds}x
-            </div>
-          </div>
-        </div>
-        <button className="w-full flex items-center justify-center gap-2 py-2 text-xs font-black uppercase tracking-wider text-green-500 bg-green-500/5 rounded-lg border border-green-500/10 group-hover:bg-green-600 group-hover:text-white transition-all">
-          Explore Tips <ChevronRight size={14} />
-        </button>
-      </div>
-    );
-
-    const CouponModal = ({ win, onClose }) => {
-      if (!win) return null;
-      return (
-        <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center px-4 pb-0 md:pb-4">
-          <div className="absolute inset-0 bg-black/80" onClick={onClose} />
-          <div className="relative w-full max-w-[400px] bg-zinc-900 border border-zinc-800 rounded-t-[32px] md:rounded-[32px] overflow-hidden shadow-2xl">
-            <div className="absolute top-4 right-4 z-10">
-              <button onClick={onClose} className="p-2 bg-black/40 text-white rounded-full hover:bg-black/60 transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-green-600 flex items-center justify-center text-white">
-                  <Trophy size={24} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-white leading-tight">Winning Coupon</h3>
-                  <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Result: {win.amount} Won</p>
-                </div>
-              </div>
-              <div className="bg-black/40 rounded-2xl p-4 border border-zinc-800 mb-6">
-                <div className="flex justify-between items-center mb-4 pb-4 border-b border-zinc-800/50">
-                  <div>
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block">Booking Code</span>
-                    <span className="text-xl font-black text-white tracking-widest">{win.code}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block">Total Odds</span>
-                    <span className="text-xl font-black text-green-500">{win.odds}x</span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {win.legs.map((leg, idx) => (
-                    <div key={idx} className="flex justify-between items-center gap-4">
-                      <div className="flex items-start gap-3 flex-1">
-                        <CheckCircle2 size={16} className="text-green-500 mt-1 flex-shrink-0" />
-                        <div>
-                          <p className="text-xs font-bold text-white leading-tight mb-0.5">{leg.match}</p>
-                          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{leg.pick}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs font-black text-green-500">{leg.odds}</p>
-                        <p className="text-[8px] font-black text-green-500/50 uppercase">WON</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button className="flex-1 py-4 bg-zinc-800 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
-                  <Copy size={14} /> COPY CODE
-                </button>
-                <button className="flex-1 py-4 bg-green-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-500 transition-all">
-                  REUSE BET
-                </button>
-              </div>
-              <p className="text-center text-[9px] font-bold text-zinc-600 mt-6 uppercase tracking-[0.2em]">Predicted by {win.tipster} • 2026 World Cup</p>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const BookingCodeCard = ({ tip }) => {
-      const [copied, setCopied] = useState(false);
-      const handleCopy = () => {
-        navigator.clipboard.writeText(tip.code).catch(() => {});
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      };
-      return (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-2xl">
-          <div className="bg-zinc-800/50 px-4 py-2 border-b border-zinc-800 flex justify-between items-center">
-            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">WC-26 CODE</span>
-            <Badge color={tip.status === 'won' ? 'green' : tip.status === 'lost' ? 'red' : 'blue'}>{tip.status}</Badge>
-          </div>
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-2xl font-black text-white tracking-widest">{tip.code}</div>
-              <button onClick={handleCopy} className={`p-2 rounded-xl transition-all ${copied ? 'bg-green-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700'}`}>
-                {copied ? <CheckCircle2 size={18} /> : <Copy size={18} />}
-              </button>
-            </div>
-            <div className="space-y-3 mb-4">
-              {tip.legs.map((leg, idx) => (
-                <div key={idx} className="flex items-center justify-between text-xs p-2 bg-black/20 rounded-lg border border-zinc-800/50">
-                  <div className="flex items-center gap-3">
-                    {leg.status === 'won' ? <CheckCircle2 size={14} className="text-green-500" /> :
-                     leg.status === 'lost' ? <XCircle size={14} className="text-red-500" /> :
-                     <div className="w-3.5 h-3.5 rounded-full border-2 border-zinc-600" />}
-                    <div className="flex flex-col">
-                      <span className="font-bold text-zinc-100">{leg.match}</span>
-                      <span className="text-[9px] text-zinc-500 uppercase font-black">{leg.pick}</span>
-                    </div>
-                  </div>
-                  <span className="font-black text-green-500">{leg.odds}</span>
-                </div>
-              ))}
-            </div>
-            <div className="pt-4 border-t border-zinc-800 flex justify-between items-center">
-              <div className="flex flex-col">
-                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Total Odds</span>
-                <span className="text-lg font-black text-white leading-none">{tip.odds}x</span>
-              </div>
-              <button className="px-6 py-2 bg-green-600 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-green-500 transition-all">
-                ADD TO SLIP
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    function App() {
-      const [activeTab, setActiveTab] = useState('hub');
-      const [selectedTipster, setSelectedTipster] = useState(null);
-      const [selectedWin, setSelectedWin] = useState(null);
-
-      const leaderboardData = useMemo(() => {
-        return [...CURATED_TIPSTERS].sort((a, b) => {
-          const scoreA = (a.accuracy * 0.6) + (a.backs / 100 * 0.3) + (a.winRate * 0.1);
-          const scoreB = (b.accuracy * 0.6) + (b.backs / 100 * 0.3) + (b.winRate * 0.1);
-          return scoreB - scoreA;
-        });
-      }, []);
-
-      const renderHub = () => (
-        <div>
-          <section className="mb-6">
-            <div className="bg-gradient-to-br from-green-800 to-black rounded-3xl p-6 text-white mb-6 relative border border-green-900/30 overflow-hidden">
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-green-400">WC-26 EXPERTS</span>
-                </div>
-                <h1 className="text-3xl font-black mb-1 leading-[0.9] tracking-tighter">THE HUB</h1>
-                <p className="text-green-100/60 text-xs mb-4 max-w-[200px]">Unlock verified strategies from our curated squad.</p>
-                <Badge color="gold">Leg Accuracy Focus</Badge>
-              </div>
-              <div className="absolute right-[-20px] top-0 opacity-10">
-                <Trophy size={180} strokeWidth={1} />
-              </div>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h2 className="text-xs font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                <Flame size={14} className="text-orange-500" /> Legend Wins
-              </h2>
-            </div>
-            <div className="flex gap-4 overflow-x-auto pb-4 px-1 -mx-1 scrollbar-hide">
-              {BIG_WINS.map(win => (
-                <div key={win.id} className="min-w-[220px] bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-xl flex flex-col">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-[9px] font-black text-green-500 uppercase tracking-wider">{win.tipster}</span>
-                    <span className="text-[9px] text-zinc-600 font-bold uppercase">{win.date}</span>
-                  </div>
-                  <div className="text-2xl font-black text-white">{win.odds}x</div>
-                  <div className="text-xs font-bold text-zinc-400 mb-3">{win.amount}</div>
-                  <div className="mt-auto space-y-2">
-                    <div className="flex items-center justify-between text-[10px] bg-black/50 px-3 py-2 rounded-xl border border-zinc-800">
-                      <span className="font-mono text-zinc-400">{win.code}</span>
-                      <Copy size={12} className="text-zinc-600" />
-                    </div>
-                    <button onClick={() => setSelectedWin(win)} className="w-full py-2 bg-zinc-800 text-white border border-zinc-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-700 transition-all">
-                      View Coupon
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="mb-20">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h2 className="text-xs font-black text-zinc-400 uppercase tracking-widest">Expert Squad</h2>
-              <Filter size={14} className="text-zinc-600" />
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {CURATED_TIPSTERS.map(tipster => (
-                <TipsterCard key={tipster.id} tipster={tipster} onClick={setSelectedTipster} />
-              ))}
-            </div>
-          </section>
-        </div>
-      );
-
-      const renderLeaderboard = () => (
-        <div className="pb-24">
-          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
-            <div className="p-6 bg-zinc-800/30 border-b border-zinc-800">
-              <h2 className="text-xl font-black text-white mb-1">LEAGUE TABLE</h2>
-              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest italic">Weighted Leg-Accuracy Scoring</p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-black/20 text-zinc-600 text-[9px] font-black uppercase tracking-[0.2em] border-b border-zinc-800">
-                  <tr>
-                    <th className="px-4 py-4 text-left">#</th>
-                    <th className="px-4 py-4 text-left">MEMBER</th>
-                    <th className="px-4 py-4 text-center">ACC%</th>
-                    <th className="px-4 py-4 text-right">SCORE</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/50">
-                  {leaderboardData.map((t, idx) => (
-                    <tr key={t.id} className="hover:bg-green-500/5 cursor-pointer transition-colors" onClick={() => setSelectedTipster(t)}>
-                      <td className="px-4 py-5 text-zinc-500 font-black text-xs">{idx + 1}</td>
-                      <td className="px-4 py-5">
-                        <div className="flex items-center gap-2">
-                          <img src={t.avatar} className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700" />
-                          <div className="text-xs font-black text-white">{t.name}</div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-5 text-center">
-                        <span className="text-xs font-black text-green-500">{t.accuracy}%</span>
-                      </td>
-                      <td className="px-4 py-5 text-right">
-                        <Badge color={idx < 3 ? "gold" : "blue"}>
-                          {((t.accuracy * 0.6) + (t.backs/100 * 0.3) + (t.winRate * 0.1)).toFixed(1)}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      );
-
-      const renderTipsterProfile = (tipster) => (
-        <div className="pb-24">
-          <button onClick={() => setSelectedTipster(null)} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-6 hover:text-green-500 transition-colors">
-            <ArrowLeft size={14} /> Back to Hub
-          </button>
-          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6 shadow-2xl mb-6">
-            <div className="flex flex-col items-center text-center mb-6">
-              <div className="relative mb-4">
-                <img src={tipster.avatar} className="w-24 h-24 rounded-3xl bg-zinc-800 shadow-md border-4 border-zinc-900" />
-                <div className="absolute -bottom-2 right-1/2 translate-x-1/2 bg-green-600 text-white rounded-lg px-3 py-1 text-[8px] font-black uppercase tracking-widest shadow-xl">
-                  VERIFIED
-                </div>
-              </div>
-              <h1 className="text-2xl font-black text-white mb-2 leading-none mt-2">{tipster.name}</h1>
-              {tipster.bio && <p className="text-zinc-400 text-xs text-center leading-relaxed italic max-w-[240px]">"{tipster.bio}"</p>}
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4 text-center">
-                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">LEG ACCURACY</p>
-                <p className="text-2xl font-black text-green-500">{tipster.accuracy}%</p>
-              </div>
-              <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4 text-center">
-                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">POPULARITY</p>
-                <p className="text-2xl font-black text-white">{tipster.backs.toLocaleString()}</p>
-              </div>
-            </div>
-            <div className="bg-green-600/5 border border-green-600/20 rounded-2xl p-4 text-center">
-              <p className="text-[9px] font-black text-green-500 uppercase tracking-widest mb-2">CURRENT FORM</p>
-              <div className="flex justify-center gap-1">
-                {[1,1,1,0,1].map((res, i) => (
-                  <div key={i} className={`w-2 h-2 rounded-full ${res === 1 ? 'bg-green-500' : 'bg-red-500 opacity-30'}`} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-4 px-2">Active Predictions</h2>
-            {tipster.recentTips && tipster.recentTips.length > 0 ? (
-              tipster.recentTips.map(tip => <BookingCodeCard key={tip.id} tip={tip} />)
-            ) : (
-              <div className="bg-zinc-900/50 rounded-3xl p-10 text-center border-2 border-dashed border-zinc-800">
-                <p className="text-zinc-600 text-xs font-black uppercase tracking-widest italic">Analyzing Matches...</p>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-
-      return (
-        <div className="min-h-screen bg-zinc-950 flex justify-center p-0 md:p-8 font-sans antialiased">
-          <div className="w-full max-w-[430px] min-h-screen md:min-h-[850px] bg-black md:rounded-[40px] md:border-[8px] md:border-zinc-800 shadow-2xl overflow-hidden flex flex-col relative overflow-y-auto no-scrollbar">
-            <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="bg-green-600 px-2 py-0.5 rounded text-[10px] text-white font-black italic tracking-tighter">B9ja</div>
-                <div className="w-[1px] h-4 bg-zinc-800 mx-1" />
-                <h1 className="text-xs font-black uppercase tracking-[0.2em] text-white">HUB</h1>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-end">
-                  <span className="text-[8px] font-black text-zinc-500 uppercase">Balance</span>
-                  <span className="text-xs font-black text-green-500 leading-none">₦25,450</span>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-                  <Users size={14} className="text-zinc-400" />
-                </div>
-              </div>
-            </header>
-
-            <main className="flex-1 px-5 pt-6 relative">
-              {!selectedTipster && (
-                <div className="flex gap-1 bg-zinc-900 p-1 rounded-2xl w-fit mb-6 border border-zinc-800 mx-auto">
-                  <button onClick={() => setActiveTab('hub')} className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'hub' ? 'bg-zinc-800 text-green-500' : 'text-zinc-600'}`}>
-                    The Hub
-                  </button>
-                  <button onClick={() => setActiveTab('leaderboard')} className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'leaderboard' ? 'bg-zinc-800 text-green-500' : 'text-zinc-600'}`}>
-                    Leagues
-                  </button>
-                </div>
-              )}
-              {selectedTipster ? renderTipsterProfile(selectedTipster) : (activeTab === 'hub' ? renderHub() : renderLeaderboard())}
-              <CouponModal win={selectedWin} onClose={() => setSelectedWin(null)} />
-            </main>
-
-            <nav className="sticky bottom-0 w-full bg-black/95 backdrop-blur-xl border-t border-zinc-800 px-6 py-4 flex justify-between items-center z-50">
-              <button onClick={() => { setSelectedTipster(null); setActiveTab('hub'); setSelectedWin(null); }} className={`flex flex-col items-center gap-1 ${activeTab === 'hub' && !selectedTipster ? 'text-green-500' : 'text-zinc-600'}`}>
-                <LayoutDashboard size={18} />
-                <span className="text-[8px] font-black uppercase tracking-widest">Home</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 text-zinc-600">
-                <Globe size={18} />
-                <span className="text-[8px] font-black uppercase tracking-widest">Live</span>
-              </button>
-              <button onClick={() => { setSelectedTipster(null); setActiveTab('leaderboard'); setSelectedWin(null); }} className={`flex flex-col items-center gap-1 ${activeTab === 'leaderboard' ? 'text-green-500' : 'text-zinc-600'}`}>
-                <Trophy size={18} />
-                <span className="text-[8px] font-black uppercase tracking-widest">Ranks</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 text-zinc-600">
-                <Star size={18} />
-                <span className="text-[8px] font-black uppercase tracking-widest">Wins</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 text-zinc-600">
-                <Settings size={18} />
-                <span className="text-[8px] font-black uppercase tracking-widest">Profile</span>
-              </button>
-            </nav>
-          </div>
-        </div>
-      );
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    function badge(label, color='green') {
+      return `<span class="badge ${color}">${escapeHtml(label)}</span>`;
+    }
+
+    function getLeaderboardData() {
+      return [...CURATED_TIPSTERS].sort((a, b) => scoreTipster(b) - scoreTipster(a));
+    }
+
+    function scoreTipster(t) {
+      return (t.accuracy * 0.6) + (t.backs / 100 * 0.3) + (t.winRate * 0.1);
+    }
+
+    function statusBadgeColor(status) {
+      if (status === 'won') return 'green';
+      if (status === 'lost') return 'red';
+      return 'blue';
+    }
+
+    function legStatusIcon(status) {
+      if (status === 'won') return '<span class="leg-status won">✔</span>';
+      if (status === 'lost') return '<span class="leg-status lost">✖</span>';
+      return '<span class="leg-status pending"></span>';
+    }
+
+    function renderHub() {
+      return `
+        <section class="section">
+          <div class="hero">
+            <div class="pulse-row">
+              <div class="pulse-dot"></div>
+              <span class="eyebrow">WC-26 Experts</span>
+            </div>
+            <h1>THE HUB</h1>
+            <p>Unlock verified strategies from our curated squad.</p>
+            ${badge('Leg Accuracy Focus', 'gold')}
+            <div class="hero-icon">🏆</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div class="section-title"><span class="flame">🔥</span> Legend Wins</div>
+          </div>
+          <div class="scroll-row">
+            ${BIG_WINS.map(win => `
+              <div class="win-card">
+                <div class="win-top">
+                  <span class="tiny-green">${escapeHtml(win.tipster)}</span>
+                  <span class="tiny-muted">${escapeHtml(win.date)}</span>
+                </div>
+                <div class="win-odds">${escapeHtml(win.odds)}x</div>
+                <div class="win-amount">${escapeHtml(win.amount)}</div>
+                <div class="code-row">
+                  <span class="mono">${escapeHtml(win.code)}</span>
+                  <span>📋</span>
+                </div>
+                <button class="ghost-btn" onclick="openWin('${win.id}')">View Coupon</button>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div class="section-title">Expert Squad</div>
+            <div class="muted-icon">⛭</div>
+          </div>
+          <div class="card-list">
+            ${CURATED_TIPSTERS.map(t => `
+              <div class="tipster-card" onclick="selectTipster('${t.id}')">
+                <div class="tipster-top">
+                  <div class="tipster-avatar-wrap">
+                    <img class="tipster-avatar" src="${escapeHtml(t.avatar)}" alt="${escapeHtml(t.name)}">
+                    ${t.rank <= 3 ? '<div class="trophy-badge">🏆</div>' : ''}
+                  </div>
+                  <div>
+                    <div class="tipster-name">${escapeHtml(t.name)}</div>
+                  </div>
+                  <div class="tipster-spacer"></div>
+                  <div style="text-align:right">
+                    <div class="stat-label">Leg Accuracy</div>
+                    <div class="stat-value-green">${escapeHtml(t.accuracy)}%</div>
+                  </div>
+                </div>
+
+                <div class="mini-grid">
+                  <div>
+                    <div class="mini-metric-label">Backs</div>
+                    <div class="mini-metric-val"><span class="icon-blue">👥</span> ${Number(t.backs).toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div class="mini-metric-label">Peak Odds</div>
+                    <div class="mini-metric-val"><span class="icon-orange">📈</span> ${escapeHtml(t.topOdds)}x</div>
+                  </div>
+                </div>
+
+                <button class="outline-btn">Explore Tips →</button>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderLeaderboard() {
+      const data = getLeaderboardData();
+      return `
+        <section class="leaderboard">
+          <div class="leaderboard-head">
+            <h2>LEAGUE TABLE</h2>
+            <p>Weighted Leg-Accuracy Scoring</p>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Member</th>
+                  <th class="center">ACC%</th>
+                  <th class="right">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.map((t, idx) => `
+                  <tr class="${idx < 3 ? 'top-three' : ''}" onclick="selectTipster('${t.id}')">
+                    <td>${idx + 1}</td>
+                    <td>
+                      <div class="table-user">
+                        <img class="table-avatar" src="${escapeHtml(t.avatar)}" alt="${escapeHtml(t.name)}">
+                        <span>${escapeHtml(t.name)}</span>
+                      </div>
+                    </td>
+                    <td class="center"><span class="stat-value-green" style="font-size:16px">${escapeHtml(t.accuracy)}%</span></td>
+                    <td class="right">${badge(scoreTipster(t).toFixed(1), idx < 3 ? 'gold' : 'blue')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderBookingCard(tip) {
+      return `
+        <div class="booking-card">
+          <div class="booking-head">
+            <div class="left">WC-26 Code</div>
+            ${badge(tip.status, statusBadgeColor(tip.status))}
+          </div>
+          <div class="booking-body">
+            <div class="booking-code-row">
+              <div class="booking-code">${escapeHtml(tip.code)}</div>
+              <button class="copy-btn" data-copy="${escapeHtml(tip.code)}" title="Copy booking code">📋</button>
+            </div>
+
+            <div class="legs">
+              ${tip.legs.map(leg => `
+                <div class="leg-row">
+                  <div class="leg-left">
+                    ${legStatusIcon(leg.status)}
+                    <div class="leg-text">
+                      <div class="leg-match">${escapeHtml(leg.match)}</div>
+                      <div class="leg-pick">${escapeHtml(leg.pick)}</div>
+                    </div>
+                  </div>
+                  <div class="leg-odds">${escapeHtml(leg.odds)}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="booking-foot">
+              <div>
+                <div class="booking-meta-label">Total Odds</div>
+                <div class="booking-meta-value">${escapeHtml(tip.odds)}x</div>
+              </div>
+              <button class="solid-btn" onclick="alert('Demo only: add to slip action.')">Add to Slip</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTipsterProfile(tipster) {
+      return `
+        <button class="back-btn" onclick="goBack()">← Back to Hub</button>
+
+        <section class="profile-card">
+          <div class="profile-head">
+            <div class="profile-avatar-wrap">
+              <img class="profile-avatar" src="${escapeHtml(tipster.avatar)}" alt="${escapeHtml(tipster.name)}">
+              <div class="verified">Verified</div>
+            </div>
+            <h1 class="profile-name">${escapeHtml(tipster.name)}</h1>
+            <p class="profile-bio">"${escapeHtml(tipster.bio || '')}"</p>
+          </div>
+
+          <div class="profile-grid">
+            <div class="profile-stat">
+              <div class="label">Leg Accuracy</div>
+              <div class="value green">${escapeHtml(tipster.accuracy)}%</div>
+            </div>
+            <div class="profile-stat">
+              <div class="label">Popularity</div>
+              <div class="value">${Number(tipster.backs).toLocaleString()}</div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="label" style="margin-bottom:8px;font-size:9px;font-weight:900;color:#4ade80;text-transform:uppercase;letter-spacing:.14em">Current Form</div>
+            <div class="dots">
+              <div class="dot green"></div>
+              <div class="dot green"></div>
+              <div class="dot green"></div>
+              <div class="dot red"></div>
+              <div class="dot green"></div>
+            </div>
+          </div>
+        </section>
+
+        <h2 class="subsection-title">Active Predictions</h2>
+        ${tipster.recentTips && tipster.recentTips.length
+          ? tipster.recentTips.map(renderBookingCard).join('')
+          : `<div class="empty-state">Analyzing Matches...</div>`
+        }
+      `;
+    }
+
+    function renderApp() {
+      const app = document.getElementById('app');
+      let inner = '';
+
+      if (!state.selectedTipster) {
+        inner += `
+          <div class="tabs">
+            <button class="tab-btn ${state.activeTab === 'hub' ? 'active' : ''}" onclick="setTab('hub')">The Hub</button>
+            <button class="tab-btn ${state.activeTab === 'leaderboard' ? 'active' : ''}" onclick="setTab('leaderboard')">Leagues</button>
+          </div>
+        `;
+      }
+
+      if (state.selectedTipster) {
+        inner += renderTipsterProfile(state.selectedTipster);
+      } else if (state.activeTab === 'hub') {
+        inner += renderHub();
+      } else {
+        inner += renderLeaderboard();
+      }
+
+      app.innerHTML = inner;
+      bindCopyButtons();
+      updateNavState();
+    }
+
+    function bindCopyButtons() {
+      document.querySelectorAll('[data-copy]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const text = btn.getAttribute('data-copy');
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+          }
+          btn.classList.add('copied');
+          btn.textContent = '✔';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.textContent = '📋';
+          }, 1800);
+        });
+      });
+    }
+
+    function updateNavState() {
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const navMap = {
+        hub: 'home',
+        leaderboard: 'ranks'
+      };
+      const active = state.selectedTipster ? 'home' : navMap[state.activeTab];
+      const btn = document.querySelector(`.nav-btn[data-nav="${active}"]`);
+      if (btn) btn.classList.add('active');
+    }
+
+    function setTab(tab) {
+      state.selectedTipster = null;
+      state.activeTab = tab;
+      renderApp();
+    }
+
+    function selectTipster(id) {
+      state.selectedTipster = CURATED_TIPSTERS.find(t => t.id === id) || null;
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBack() {
+      state.selectedTipster = null;
+      renderApp();
+    }
+
+    function openWin(id) {
+      const win = BIG_WINS.find(w => w.id === id);
+      if (!win) return;
+      state.selectedWin = win;
+      renderModal();
+      document.getElementById('couponModal').classList.add('show');
+    }
+
+    function closeModal() {
+      state.selectedWin = null;
+      document.getElementById('couponModal').classList.remove('show');
+    }
+
+    function renderModal() {
+      const win = state.selectedWin;
+      const body = document.getElementById('modalBody');
+      if (!win) {
+        body.innerHTML = '';
+        return;
+      }
+
+      body.innerHTML = `
+        <div class="modal-head">
+          <div class="modal-icon">🏆</div>
+          <div>
+            <h3 class="modal-title">Winning Coupon</h3>
+            <div class="modal-sub">Result: ${escapeHtml(win.amount)} Won</div>
+          </div>
+        </div>
+
+        <div class="coupon-box">
+          <div class="coupon-top">
+            <div>
+              <span class="coupon-label">Booking Code</span>
+              <span class="coupon-big">${escapeHtml(win.code)}</span>
+            </div>
+            <div style="text-align:right">
+              <span class="coupon-label">Total Odds</span>
+              <span class="coupon-green">${escapeHtml(win.odds)}x</span>
+            </div>
+          </div>
+
+          <div>
+            ${win.legs.map(leg => `
+              <div class="coupon-leg">
+                <div class="coupon-leg-left">
+                  <div class="coupon-check">✔</div>
+                  <div>
+                    <div class="coupon-match">${escapeHtml(leg.match)}</div>
+                    <div class="coupon-pick">${escapeHtml(leg.pick)}</div>
+                  </div>
+                </div>
+                <div class="coupon-leg-right">
+                  <div class="odd">${escapeHtml(leg.odds)}</div>
+                  <div class="won">Won</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="small-btn secondary" id="copyWinCode">Copy Code</button>
+          <button class="small-btn primary" onclick="alert('Demo only: reuse bet action.')">Reuse Bet</button>
+        </div>
+
+        <div class="modal-foot">Predicted by ${escapeHtml(win.tipster)} • 2026 World Cup</div>
+      `;
+
+      const copyBtn = document.getElementById('copyWinCode');
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(win.code);
+        } catch {
+          const el = document.createElement('textarea');
+          el.value = win.code;
+          document.body.appendChild(el);
+          el.select();
+          document.execCommand('copy');
+          document.body.removeChild(el);
+        }
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => copyBtn.textContent = 'Copy Code', 1400);
+      });
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalBackdrop').addEventListener('click', closeModal);
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nav = btn.getAttribute('data-nav');
+        if (nav === 'home') {
+          state.selectedTipster = null;
+          state.activeTab = 'hub';
+          closeModal();
+          renderApp();
+        } else if (nav === 'ranks') {
+          state.selectedTipster = null;
+          state.activeTab = 'leaderboard';
+          closeModal();
+          renderApp();
+        } else {
+          alert('Demo only: this tab is not wired yet.');
+        }
+      });
+    });
+
+    renderApp();
+
+    window.setTab = setTab;
+    window.selectTipster = selectTipster;
+    window.goBack = goBack;
+    window.openWin = openWin;
   </script>
 </body>
 </html>
